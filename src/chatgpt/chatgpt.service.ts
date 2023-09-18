@@ -1,7 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { Observable, catchError, map, of } from 'rxjs';
+import { Observable, catchError, delay, map, of } from 'rxjs';
 
 interface ChatCompletion {
     id: string;
@@ -47,6 +47,7 @@ export class ChatgptService {
         };
 
         return this.httpService.post<ChatCompletion>(this.chatgptURL, data, { headers }).pipe(
+            delay(1000),
             map(({ data }) => data.choices[0].message.content.trim()),
             catchError((error) => {
                 this.logger.error(error);
